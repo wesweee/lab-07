@@ -1,2 +1,114 @@
 package com.example.lab_7
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+
+@Composable
+fun DriverScreen(navController: NavController) {
+    var driver by remember { mutableStateOf("") }
+
+    var drivers = remember { mutableStateListOf<String>() }
+
+    Column (
+        modifier = Modifier.fillMaxSize().padding(16.dp)
+    ) {
+        Spacer (modifier = Modifier.height(16.dp))
+
+        // Implement back button
+        Button(
+            onClick = {
+                navController.popBackStack()
+            },
+            modifier = Modifier.testTag("backButton") // For testing
+        ) {
+            Text("BACK")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Title
+        Text (
+            text = "FormulaZero Drivers",
+            fontSize = 30.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Text field and button to add drivers
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            TextField (
+                value = driver,
+                onValueChange = {
+                    driver = it // Update driver to new value
+                },
+                label = {
+                    Text("Driver Name")
+                },
+                modifier = Modifier.testTag("driverInput") // For testing
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                    if (driver.isNotBlank()) {
+                        drivers.add(driver)
+                        driver = ""
+                    }
+                },
+                modifier = Modifier.testTag("addDriverButton")
+            ) {
+                Text("ADD")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Button to clear all drivers
+        Button(
+            onClick = {
+                drivers.clear()
+            },
+            modifier = Modifier.testTag("clearButton") // For testing
+        ) {
+            Text("CLEAR")
+        }
+
+        // List to display drivers
+        LazyColumn {
+            items(drivers) { driver ->
+                Spacer (modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = driver,
+                    fontSize = 24.sp
+                )
+            }
+        }
+    }
+}
